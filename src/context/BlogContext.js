@@ -4,8 +4,12 @@ import createDataContext from './createDataContex';
 
 const blogReducer = (state, action) =>{
     switch(action.type){
+        case 'delete_blogpost':
+            const newArr = [...state].filter((item) => { return item.id !== action.id;});
+            console.log('%c++','background:lime',newArr);
+            return [...newArr];
         case 'add_blogpost':
-            return [...state, {title:`Blog post #${state.length++}`}];
+            return [...state, {title:`Blog post #${state.length++}`,id:Math.floor(Math.random()*99999)}];
         default:
             return state;
     }
@@ -15,7 +19,13 @@ const addBlogPost = (trigerFunc) => {
         trigerFunc({ type: 'add_blogpost' });
     }
 };
-export const { Context, Provider } = createDataContext(blogReducer, {addBlogPost},[])
+const deleteBlogPost = (trigerFunc) =>{
+    return (id) => {        
+        console.log('%c++', 'background:black', id);
+        trigerFunc({type: 'delete_blogpost', id});
+    }
+}
+export const { Context, Provider } = createDataContext(blogReducer, {addBlogPost, deleteBlogPost},[])
 /* 
 import React, { useReducer } from 'react';
 export default (reducer = blogReducer, actions = {addBlogPost}, initialState = []) => {
