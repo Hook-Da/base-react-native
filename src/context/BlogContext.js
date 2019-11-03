@@ -9,14 +9,19 @@ const blogReducer = (state, action) =>{
             console.log('%c++','background:lime',newArr);
             return [...newArr];
         case 'add_blogpost':
-            return [...state, {title:`Blog post #${state.length++}`,id:Math.floor(Math.random()*99999)}];
+            return [...state, {
+                title:action.payload.title,
+                content:action.payload.content,
+                id:Math.floor(Math.random()*99999)
+            }];
         default:
             return state;
     }
 }
 const addBlogPost = (trigerFunc) => {
-    return () => {
-        trigerFunc({ type: 'add_blogpost' });
+    return (title, content,callback) => {
+        trigerFunc({ type: 'add_blogpost', payload:{title, content }});
+        callback();
     }
 };
 const deleteBlogPost = (trigerFunc) =>{
@@ -25,7 +30,9 @@ const deleteBlogPost = (trigerFunc) =>{
         trigerFunc({type: 'delete_blogpost', id});
     }
 }
-export const { Context, Provider } = createDataContext(blogReducer, {addBlogPost, deleteBlogPost},[])
+export const { Context, Provider } = createDataContext(blogReducer, {addBlogPost, deleteBlogPost},[
+    {title:'Test title',content:'Test content',id:1}
+])
 /* 
 import React, { useReducer } from 'react';
 export default (reducer = blogReducer, actions = {addBlogPost}, initialState = []) => {
